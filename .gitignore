@@ -1,0 +1,7 @@
+venv
+.idea
+static
+
+__pycache__
+MessageService/__pycache__
+chat/__pycache__
