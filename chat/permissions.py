@@ -3,8 +3,7 @@ from rest_framework import permissions
 
 class IsOwner(permissions.BasePermission):
     """
-    Object-level permission to only allow owners of an object to edit it.
-    Admin user can also access to object.
+    Object-level permission to only allow senders of an message to edit it.
     """
 
     def has_object_permission(self, request, view, obj):
@@ -13,8 +12,7 @@ class IsOwner(permissions.BasePermission):
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Object-level permission to only allow owners of an object to edit it.
-    Admin user can also access to object.
+    Object-level permission to only allow users themselves to edit their user information.
     """
 
     def has_object_permission(self, request, view, obj):

@@ -3,6 +3,7 @@ from django.db import models
 
 
 class Message(models.Model):
+    """Model for storing message information"""
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
     text = models.CharField(max_length=1200)

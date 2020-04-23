@@ -57,12 +57,12 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         delete:
         Delete the particular user's message specified by id.
-
     """
     message_serializer = MessageSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
+        # Get messages of specified user, but related to requesting one
         messages = Message.objects.filter((Q(sender=self.request.user) & Q(receiver_id=self.kwargs['user_id']))
                                           | (Q(receiver=self.request.user) & Q(sender_id=self.kwargs['user_id'])))
         return messages
@@ -71,4 +71,5 @@ class MessageViewSet(viewsets.ModelViewSet):
         return self.message_serializer
 
     def perform_create(self, serializer):
+        # Specify the sender and receiver automatically according to path parameters and authentication
         return serializer.save(sender=self.request.user, receiver=User.objects.get(id=self.kwargs['user_id']))
