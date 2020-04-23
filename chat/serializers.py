@@ -9,14 +9,15 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name']
         write_only_fields = ('password',)
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = serializers.SlugRelatedField(many=False, slug_field='username', queryset=User.objects.all())
-    receiver = serializers.SlugRelatedField(many=False, slug_field='username', queryset=User.objects.all())
+    sender = serializers.SlugRelatedField(many=False, slug_field='username', read_only=True)
+    receiver = serializers.SlugRelatedField(many=False, slug_field='username', read_only=True)
 
     class Meta:
         model = Message
-        fields = ['sender', 'receiver', 'text', 'timestamp']
+        fields = ['id', 'sender', 'receiver', 'text', 'timestamp']
+        read_only_fields = ('sender', 'receiver')

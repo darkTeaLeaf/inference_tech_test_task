@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 from chat.models import Message
+from chat.permissions import IsOwnerOrReadOnly, IsOwner
 from chat.serializers import MessageSerializer, UserSerializer
 
 
@@ -29,6 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     user_serializer = UserSerializer
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_serializer_class(self):
         return self.user_serializer
@@ -57,10 +60,15 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     """
     message_serializer = MessageSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        messages = Message.objects.filter(Q(sender_id=self.kwargs['user_id']) | Q(receiver_id=self.kwargs['user_id']))
+        messages = Message.objects.filter((Q(sender=self.request.user) & Q(receiver_id=self.kwargs['user_id']))
+                                          | (Q(receiver=self.request.user) & Q(sender_id=self.kwargs['user_id'])))
         return messages
 
     def get_serializer_class(self):
         return self.message_serializer
+
+    def perform_create(self, serializer):
+        return serializer.save(sender=self.request.user, receiver=User.objects.get(id=self.kwargs['user_id']))
