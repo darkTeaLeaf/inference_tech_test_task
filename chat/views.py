@@ -40,23 +40,28 @@ class UserViewSet(viewsets.ModelViewSet):
 class MessageViewSet(viewsets.ModelViewSet):
     """
         retrieve:
-        Return the particular user's message specified by id.
+        Return the particular message specified by **id** and belonging to user with id equals to **user_id**.
 
         list:
-        Return a list of all the existing messages for or from particular user.
+        Return a list of messages belonging to user with id equals to **user_id** and somehow related to user which
+        credentials are provided with the request (authenticated user is sender or receiver for the messages).
 
         create:
-        Create a new message from particular user.
+        Create a new message for user with id equals to **user_id** from  user which credentials are provided
+        with the request.
 
         update:
-        Update of all message fields which send by particular user. Request should contain all message parameters.
+        Update the message specified by **id** where user with id equals to **user_id** is receiver and user which
+        credentials are provided with the request is sender. Request should contain all message parameters.
 
         partial_update:
-        Update of all or some of message fields which send by particular user. There is no requirement to contain
+        Update some of message fields which specified by **id** where user with id equals to **user_id** is receiver
+        and user which credentials are provided with the request is sender. There is no requirement to contain
         all the parameters.
 
         delete:
-        Delete the particular user's message specified by id.
+        Delete the message specified by **id** where user with id equals to **user_id** is receiver and user which
+        credentials are provided with the request is sender.
     """
     message_serializer = MessageSerializer
     permission_classes = [IsAuthenticated, IsOwner]
